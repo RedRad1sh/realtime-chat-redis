@@ -1,0 +1,9 @@
+server:
+  port: 9092
+spring:
+  redis:
+    host: localhost
+    password: sOmE_sEcUrE_pAsS
+    port: 6379
+  main:
+    allow-bean-definition-overriding: true
