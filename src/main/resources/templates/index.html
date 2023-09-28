@@ -3,15 +3,11 @@
 </div>
 <div id="content">
     <br/>
-    <table class="datatable">
-        <tr>
-            <th>USERID</th>
-            <th>CONTENT</th>
-        </tr>
+    <div class="messageContainer">
 
-        <tr th:each="message: ${messageList}">
+        <div th:each="message: ${messageList}">
             <td th:text="${message}"></td>
-        </tr>
-    </table>
+        </div>
+    </div>
     <button>Hello click me</button>
 </div>
