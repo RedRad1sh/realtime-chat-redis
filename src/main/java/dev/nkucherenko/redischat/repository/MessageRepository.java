@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface MessageRepository extends CrudRepository<Message, UUID> {
-    Set<Message> findAll();
+    Set<Message> findByChatIdIsLike(String userId);
+    Set<Message> findByChatId(String chatId);
 }

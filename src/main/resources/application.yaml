@@ -13,4 +13,4 @@ spring:
 
 redis:
   pubsub:
-    topic: user-messages
+    topic: general

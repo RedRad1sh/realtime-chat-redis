@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 @Configuration
 public class RedisConfiguration {
 
-    @Value("${redis.pubsub.topic:user-messages}")
+    @Value("${redis.pubsub.topic:general}")
     private String topic;
 
     @Bean

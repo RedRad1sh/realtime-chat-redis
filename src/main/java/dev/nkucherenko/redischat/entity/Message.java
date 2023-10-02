@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -21,4 +22,6 @@ public class Message {
     private LocalDateTime time;
     private String name;
     private String pfpUrl;
+    @Indexed
+    private String chatId;
 }
