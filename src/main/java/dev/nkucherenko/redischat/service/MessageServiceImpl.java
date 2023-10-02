@@ -1,6 +1,6 @@
 package dev.nkucherenko.redischat.service;
 
-import dev.nkucherenko.redischat.dto.Message;
+import dev.nkucherenko.redischat.entity.Message;
 import dev.nkucherenko.redischat.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +32,9 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public TreeSet<Message> getAllMessages() {
         TreeSet<Message> messageTreeSet = new TreeSet<>(messageComparator);
-        messageTreeSet.addAll(messageRepository.findAll());
+        Set<Message> messagesSet = messageRepository.findAll().stream()
+                .filter(msg -> msg != null && msg.getTime() != null).collect(Collectors.toSet());
+        messageTreeSet.addAll(messagesSet);
         return messageTreeSet;
     }
 }

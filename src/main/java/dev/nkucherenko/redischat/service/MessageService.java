@@ -1,6 +1,6 @@
 package dev.nkucherenko.redischat.service;
 
-import dev.nkucherenko.redischat.dto.Message;
+import dev.nkucherenko.redischat.entity.Message;
 
 import java.util.TreeSet;
 
@@ -15,6 +15,7 @@ public interface MessageService {
 
     /**
      * Get messages ordered by dateTime
+     *
      * @return messages
      */
     TreeSet<Message> getAllMessages();
