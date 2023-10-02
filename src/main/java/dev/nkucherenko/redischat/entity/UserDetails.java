@@ -6,9 +6,7 @@ import lombok.experimental.Accessors;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

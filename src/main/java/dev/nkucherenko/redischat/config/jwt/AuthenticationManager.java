@@ -31,11 +31,13 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
     }
 
     private UsernamePasswordAuthenticationToken getAuthorities(UserDetails userDetails) {
-        return new UsernamePasswordAuthenticationToken(
+        var userPasswordToken = new UsernamePasswordAuthenticationToken(
                 userDetails.getUserName(), null,
                 userDetails.getAuthorities().stream()
                         .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
                         .collect(Collectors.toList()));
+        userPasswordToken.setDetails(userDetails.getId());
+        return userPasswordToken;
     }
 
     private UserDetails tokenValidate(String token) {

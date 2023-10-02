@@ -11,12 +11,14 @@ public interface MessageService {
      * @param message of the User
      * @return result code
      */
-    String postMessage(Message message);
+    String postMessage(Message message, String userName);
 
     /**
      * Get messages ordered by dateTime
      *
      * @return messages
      */
-    TreeSet<Message> getAllMessages();
+    TreeSet<Message> getAllMessagesByChatId(String chatId, String userName);
+
+    String resolveChatId(String chatId, String userId);
 }
