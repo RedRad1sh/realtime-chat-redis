@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .pathMatchers("/token/auth").permitAll()
                 .pathMatchers("/token/register").permitAll()
                 .pathMatchers("/admin").hasAuthority("ADMIN")
-                .pathMatchers(HttpMethod.OPTIONS, "/post").permitAll()
+                .pathMatchers(HttpMethod.OPTIONS).permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .httpBasic()

@@ -8,4 +8,8 @@ public class InvalidJwtKeyException extends RuntimeException {
     public InvalidJwtKeyException(Throwable cause) {
         super(cause);
     }
+
+    public InvalidJwtKeyException(String message) {
+        super(message);
+    }
 }

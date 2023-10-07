@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class UserDetails {
     @Indexed
     private String userName;
     private String password;
+    private Set<String> roomIds = new HashSet<>();
     private Set<GrantedAuthority> authorities = Set.of();
 
     public UserDetails() {
