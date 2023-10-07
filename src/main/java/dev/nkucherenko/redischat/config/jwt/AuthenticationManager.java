@@ -3,7 +3,7 @@ package dev.nkucherenko.redischat.config.jwt;
 import dev.nkucherenko.redischat.entity.UserDetails;
 import dev.nkucherenko.redischat.exception.InvalidJwtKeyException;
 import dev.nkucherenko.redischat.repository.UserRepository;
-import dev.nkucherenko.redischat.service.JwtService;
+import dev.nkucherenko.redischat.service.impl.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;

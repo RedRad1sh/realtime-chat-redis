@@ -1,14 +1,14 @@
 package dev.nkucherenko.redischat.controller;
 
-import static dev.nkucherenko.redischat.util.Utils.resolveChannelTopic;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.nkucherenko.redischat.dto.NotificationTypeEnum;
+import dev.nkucherenko.redischat.dto.UserNotificationDto;
 import dev.nkucherenko.redischat.entity.Message;
 import dev.nkucherenko.redischat.service.MessageService;
+import dev.nkucherenko.redischat.service.RedisListenerClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.GenericApplicationContext;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.ReactiveRedisMessageListenerContainer;
 import org.springframework.http.MediaType;
@@ -22,43 +22,55 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class MessageController {
-    private final ReactiveRedisMessageListenerContainer listenerContainer;
-    private List<ChannelTopic> channelTopics;
+    private final ReactiveRedisConnectionFactory redisConnectionFactory;
     private final MessageService messageService;
-    private final ObjectMapper objectMapper;
-    private final GenericApplicationContext applicationContext;
+    private final RedisListenerClient redisListenerClient;
 
     @PostMapping(value = "/post")
     public void postMessage(@RequestBody Message message, Authentication authentication) {
         log.info(message.toString());
         String userId = authentication.getDetails().toString();
-        message.setUserId(UUID.randomUUID());
+        message.setUserId(UUID.fromString(userId));
         messageService.postMessage(message, userId);
     }
 
     @GetMapping(value = "/chatAlive", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<Message> subscribe(@RequestParam @Nullable String chatId, Authentication authentication) {
+    public Flux<UserNotificationDto> subscribe(@RequestParam @Nullable String chatId, Authentication authentication) {
         String userId = authentication.getDetails().toString();
         String resolvedChatId = messageService.resolveChatId(chatId, userId);
-        Flux<Message> stringFlux = Flux.just(new ArrayList<>(messageService.getAllMessagesByChatId(resolvedChatId, userId))
-                .toArray(new Message[]{}));
+        Flux<UserNotificationDto> savedMessagesFlux = getSavedMessages(userId, resolvedChatId);
 
-        ChannelTopic channelTopic = resolveChannelTopic(resolvedChatId, applicationContext);
+        Set<ChannelTopic> channelTopicSet = redisListenerClient.getChannelTopics(userId, resolvedChatId);
+        ReactiveRedisMessageListenerContainer listenerContainer = new ReactiveRedisMessageListenerContainer(redisConnectionFactory);
 
-        return stringFlux.concatWith(listenerContainer.receive(channelTopic).map(a -> {
-            try {
-                return objectMapper.readValue(a.getMessage(), Message.class);
-            } catch (JsonProcessingException jsonProcessingException) {
-                return new Message();
-            }
-        }));
+        return concatSavedAndReceivedMessages(savedMessagesFlux, resolvedChatId, channelTopicSet, listenerContainer);
     }
+
+    @NotNull
+    private Flux<UserNotificationDto> concatSavedAndReceivedMessages(Flux<UserNotificationDto> savedMessagesFlux,
+                                                                     String resolvedChatId, Set<ChannelTopic> channelTopicSet,
+                                                                     ReactiveRedisMessageListenerContainer listenerContainer) {
+        return savedMessagesFlux.concatWith(listenerContainer
+                .receive(channelTopicSet.toArray(new ChannelTopic[]{}))
+                .map(a -> redisListenerClient.receiveNotification(resolvedChatId, a))
+        );
+
+    }
+
+    @NotNull
+    private Flux<UserNotificationDto> getSavedMessages(String userId, String resolvedChatId) {
+        return Flux.just(new ArrayList<>(messageService.getAllMessagesByChatId(resolvedChatId, userId))
+                .stream().map(msg -> new UserNotificationDto()
+                        .setMessage(msg)
+                        .setType(NotificationTypeEnum.CHAT_MESSAGE)).toArray(UserNotificationDto[]::new));
+    }
+
+
 }
