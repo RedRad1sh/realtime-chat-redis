@@ -15,7 +15,7 @@ redis:
   pubsub:
     topic: general
 
-signatureKey: VkVSWV9TRUNSRVRfU0VDUkVUX0tFWV9ZT1VfRFVNQl9IQUNLRVI=
+signatureKey: ${JWT_SIGNATURE:VkVSWV9TRUNSRVRfU0VDUkVUX0tFWV9ZT1VfRFVNQl9IQUNLRVI=}
 
 gpt:
   constants:
