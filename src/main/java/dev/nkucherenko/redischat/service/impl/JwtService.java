@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.nkucherenko.redischat.dto.UserDto;
 import dev.nkucherenko.redischat.entity.UserDetails;
-import dev.nkucherenko.redischat.exception.InvalidJwtKeyException;
 import dev.nkucherenko.redischat.exception.InvalidPasswordException;
 import dev.nkucherenko.redischat.exception.UserAlreadyExistsException;
 import dev.nkucherenko.redischat.exception.UserNotFoundException;
@@ -14,16 +13,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJwsHeader;
-import io.jsonwebtoken.impl.crypto.DefaultJwtSignatureValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.Date;
 
 @Service

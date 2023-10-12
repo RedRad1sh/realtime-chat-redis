@@ -1,11 +1,13 @@
 package dev.nkucherenko.redischat.exception;
 
-public class UserNotFoundException extends RuntimeException {
-    public UserNotFoundException() {
-        super();
+import dev.nkucherenko.redischat.dto.exception.ErrorCode;
+
+public class UserNotFoundException extends BusinessException {
+    public ErrorCode getErrorCode() {
+        return ErrorCode.USER_NOT_EXIST;
     }
 
-    public UserNotFoundException(Throwable cause) {
-        super(cause);
+    public UserNotFoundException() {
+        super();
     }
 }

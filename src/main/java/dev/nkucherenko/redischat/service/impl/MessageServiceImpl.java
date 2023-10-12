@@ -70,19 +70,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void sendGptBotMessage(Message message, String chatId, String channelTopic) {
-        ExecutorService executorsService = Executors.newSingleThreadExecutor();
-        executorsService.submit(() -> {
-            try {
-                MessageDto messageDto = chatGptService.sendAndReceiveMessage(chatId, message.getContent());
-                messageDto.setChatId(chatId);
-                messageDto.setTime(LocalDateTime.now());
+        try (ExecutorService executorsService = Executors.newSingleThreadExecutor()) {
+            executorsService.submit(() -> {
+                try {
+                    MessageDto messageDto = chatGptService.sendAndReceiveMessage(chatId, message.getContent());
+                    messageDto.setChatId(chatId);
+                    messageDto.setTime(LocalDateTime.now());
 
-                Message msgChatGpt = messageRepository.save(messageMapper.messageDtoToMessage(messageDto));
-                redisTemplate.convertAndSend(channelTopic, msgChatGpt);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-            }
-        });
+                    Message msgChatGpt = messageRepository.save(messageMapper.messageDtoToMessage(messageDto));
+                    redisTemplate.convertAndSend(channelTopic, msgChatGpt);
+                } catch (IOException exception) {
+                    log.error("Error while sending chatgpt message", exception);
+                }
+            });
+        }
     }
 
     @Override
@@ -97,13 +98,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     public String resolveChatId(String chatId, String userId) {
-        String resolvedChatId;
         if (!StringUtils.isEmpty(chatId) && userExistsByChatId(chatId)) {
-            resolvedChatId = buildChatId(chatId, userId);
+            return buildPrivateChatId(chatId, userId);
         } else {
-            resolvedChatId = GENERAL_CHAT_ID;
+            return GENERAL_CHAT_ID;
         }
-        return resolvedChatId;
     }
 
     private boolean userExistsByChatId(String chatId) {
@@ -115,14 +114,12 @@ public class MessageServiceImpl implements MessageService {
         }
     }
 
-    private String buildChatId(String chatId, String userId) {
-        String resolvedChatId;
+    private String buildPrivateChatId(String chatId, String userId) {
         if (chatId.compareTo(userId) > 0) {
-            resolvedChatId = String.format(DELIMITER_CONSTANT, chatId, userId);
+            return String.format(DELIMITER_CONSTANT, chatId, userId);
         } else {
-            resolvedChatId = String.format(DELIMITER_CONSTANT, userId, chatId);
+            return String.format(DELIMITER_CONSTANT, userId, chatId);
         }
-        return resolvedChatId;
     }
 
     private void updateUserRooms(String chatId, String userId, String resolvedChatId) {

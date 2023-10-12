@@ -14,13 +14,19 @@
     <name>redis-chat</name>
     <description>Demo project for Spring Boot</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>17</java.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty</artifactId>
+            <version>3.9.9.Final</version>
         </dependency>
 
         <dependency>
@@ -85,6 +91,7 @@
             <artifactId>okhttp</artifactId>
             <version>4.9.1</version>
         </dependency>
+
 
     </dependencies>
 

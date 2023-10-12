@@ -1,15 +1,13 @@
 package dev.nkucherenko.redischat.exception;
 
-public class InvalidJwtKeyException extends RuntimeException {
-    public InvalidJwtKeyException() {
-        super();
+import dev.nkucherenko.redischat.dto.exception.ErrorCode;
+
+public class InvalidJwtKeyException extends BusinessException {
+    public ErrorCode getErrorCode() {
+        return ErrorCode.JWT_AUTHORIZATION_ERROR;
     }
 
     public InvalidJwtKeyException(Throwable cause) {
         super(cause);
-    }
-
-    public InvalidJwtKeyException(String message) {
-        super(message);
     }
 }
