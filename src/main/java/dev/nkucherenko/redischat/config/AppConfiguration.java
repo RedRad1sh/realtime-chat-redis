@@ -26,34 +26,4 @@ public class AppConfiguration {
         mapper.registerModule(new JavaTimeModule());
         return mapper;
     }
-
-    @Bean
-    public AsyncTaskExecutor applicationTaskExecutor() {
-        return new TaskExecutorAdapter(Executors.newVirtualThreadPerTaskExecutor());
-    }
-
-    @Bean
-    public EventLoopGroup bossGroup() {
-        return new NioEventLoopGroup(1); // Здесь вы можете указать количество потоков
-    }
-
-    @Bean
-    public EventLoopGroup workerGroup() {
-        return new NioEventLoopGroup(); // По умолчанию будет использоваться количество доступных процессорных ядер
-    }
-
-    @Bean
-    public ServerBootstrap serverBootstrap(MyChannelInitializer myChannelInitializer) {
-        VirtualExecutorService
-        ServerBootstrap b = new ServerBootstrap();
-        b.group(bossGroup(), workerGroup())
-                .channel(NioServerSocketChannel.class)
-                .childHandler(myChannelInitializer); // Используем свой ChannelInitializer
-        return b;
-    }
-
-    @Bean
-    public EventExecutorGroup customEventExecutor() {
-        return Executors.newVirtualThreadPerTaskExecutor();
-    }
 }
