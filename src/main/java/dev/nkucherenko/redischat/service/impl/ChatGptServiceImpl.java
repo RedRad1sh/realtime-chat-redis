@@ -41,8 +41,9 @@ public class ChatGptServiceImpl implements ChatGptService {
     public MessageDto sendAndReceiveMessage(String userName, String content) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
-        RequestBody body = RequestBody.create(MEDIA_TYPE,
-                String.format(jsonTemplate, UUID.randomUUID(), botBehaviour, content)
+        RequestBody body = RequestBody.create(
+                String.format(jsonTemplate, UUID.randomUUID(), botBehaviour, content),
+                MEDIA_TYPE
         );
 
         Request request = new Request.Builder()

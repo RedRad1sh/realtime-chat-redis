@@ -1,11 +1,13 @@
 package dev.nkucherenko.redischat.exception;
 
-public class InvalidPasswordException extends RuntimeException {
-    public InvalidPasswordException() {
-        super();
+import dev.nkucherenko.redischat.dto.exception.ErrorCode;
+
+public class InvalidPasswordException extends BusinessException {
+    public ErrorCode getErrorCode() {
+        return ErrorCode.WRONG_PASSWORD;
     }
 
-    public InvalidPasswordException(Throwable cause) {
-        super(cause);
+    public InvalidPasswordException() {
+        super();
     }
 }

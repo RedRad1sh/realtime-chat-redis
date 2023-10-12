@@ -1,11 +1,13 @@
 package dev.nkucherenko.redischat.exception;
 
-public class UserAlreadyExistsException extends RuntimeException {
-    public UserAlreadyExistsException() {
-        super();
+import dev.nkucherenko.redischat.dto.exception.ErrorCode;
+
+public class UserAlreadyExistsException extends BusinessException {
+    public ErrorCode getErrorCode() {
+        return ErrorCode.USER_COLLISION;
     }
 
-    public UserAlreadyExistsException(Throwable cause) {
-        super(cause);
+    public UserAlreadyExistsException() {
+        super();
     }
 }
