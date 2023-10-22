@@ -1,0 +1,13 @@
+<div id="header">
+    <h2>FreeMarker Spring MVC Hello World</h2>
+</div>
+<div id="content">
+    <br/>
+    <div class="messageContainer">
+
+        <div th:each="message: ${messageList}">
+            <td th:text="${message}"></td>
+        </div>
+    </div>
+    <button>Hello click me</button>
+</div>
